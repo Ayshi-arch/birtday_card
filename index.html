@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Birthday Card</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;500&family=Dancing+Script:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      font-family: 'Roboto', sans-serif;
+      overflow: hidden;
+    }
+
+    .card {
+      width: 450px;
+      height: 350px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 1s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card-front {
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      color: white;
+      font-size: 2rem;
+      font-family: 'Pacifico', cursive;
+    }
+
+    .card-back {
+      background: white;
+      color: #333;
+      transform: rotateY(180deg);
+    }
+
+    .card-back h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      font-family: 'Pacifico', cursive;
+      color: #ff7eb3;
+    }
+
+    .card-back p {
+      font-size: 1.1rem;
+      line-height: 1.4;
+      margin: 8px 0;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .card.open .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .balloon {
+      position: absolute;
+      width: 50px;
+      height: 70px;
+      background-color: #ff9999;
+      border-radius: 50%;
+      animation: floatUp 5s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    .string {
+      position: absolute;
+      width: 2px;
+      height: 60px;
+      background-color: #333;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-500px);
+        opacity: 0;
+      }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: #e798fd;
+      border-radius: 50%;
+      animation: glitterFall 3s infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes glitterFall {
+      0% {
+        transform: translateY(-210px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(200px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" onclick="toggleCard()">
+    <div class="card-inner">
+      <div class="card-front">
+        🎉 Tap to Open 🎂
+      </div>
+      <div class="card-back">
+        <div>
+          <h1>Happy Birthday!</h1>
+          <p>Today is your special day—shine like the star you are! 🌟</p>
+          <p>You light up every room you walk into with your positivity and energy.</p>
+          <p>May this year bring you endless adventures and cherished moments. 🌈</p>
+          <p>You truly deserve all the love, laughter, and joy in the world. 💖</p>
+          <p>Here’s to celebrating your wonderful self today and always! 🥳</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleCard() {
+      const card = document.querySelector('.card');
+      card.classList.toggle('open');
+      if (card.classList.contains('open')) {
+        releaseConfetti();
+      }
+    }
+
+    function releaseConfetti() {
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+          confetti.remove();
+        }, 3000);
+      }
+    }
+
+    function randomColor() {
+      const colors = ['#ff9999', '#ffcc99', '#99ccff', '#cc99ff', '#66ff99', '#ffccff', '#ffb3ff'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // Function to create and float balloons with strings
+    function createBalloons() {
+      for (let i = 0; i < 10; i++) {
+        const balloon = document.createElement('div');
+        balloon.classList.add('balloon');
+        balloon.style.backgroundColor = getRandomBalloonColor();
+        balloon.style.left = Math.random() * 100 + 'vw';
+        balloon.style.bottom = Math.random() * 20 + 'vh'; // Starting point from bottom
+
+        // Create balloon string
+        const string = document.createElement('div');
+        string.classList.add('string');
+
+        // Append string and balloon
+        balloon.appendChild(string);
+        document.body.appendChild(balloon);
+
+        setTimeout(() => {
+          balloon.remove(); // Remove balloon after animation
+        }, 5000); // Balloon will float for 5 seconds
+      }
+    }
+
+    // Get random balloon color
+    function getRandomBalloonColor() {
+      const balloonColors = ['#ff7eb3', '#ffcc99', '#a3d9ff', '#ff9999', '#ccff99'];
+      return balloonColors[Math.floor(Math.random() * balloonColors.length)];
+    }
+
+    // Start balloons on page load
+    window.onload = function() {
+      createBalloons(); // Create balloons as soon as the page loads
+      setInterval(createBalloons, 5000); // Add new balloons every 5 seconds
+    }
+  </script>
+</body>
+</html>
